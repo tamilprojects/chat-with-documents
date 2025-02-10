@@ -1,0 +1,14 @@
+# Ignore Jupyter notebooks
+*.ipynb
+
+# Ignore virtual environment
+myenv/
+
+# Ignore compiled Python files
+__pycache__/
+
+# Ignore environment variables (remove this if you need .env)
+.env
+
+# Ignore main Streamlit app (optional)
+app.py
