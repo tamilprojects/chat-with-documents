@@ -33,7 +33,7 @@ pillow
 pillow_heif
 pyarrow
 pydantic
-pypdf2
+PyPDF2
 pypdfium2
 pytesseract
 PyYAML
