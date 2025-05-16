@@ -15,16 +15,15 @@ load_dotenv()
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-
 def get_pdf_text(pdf_docs):
-    pdf_docs = "E:\Projects\Chatbot_Application\Indian constitution.pdf"
-    text=""
+    text = ""
     for pdf in pdf_docs:
-        pdf_reader= PdfReader(pdf)
+        pdf_reader = PdfReader(pdf)  # use uploaded file-like object directly
         for page in pdf_reader.pages:
-            text+= page.extract_text()
-    return  text
-
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text
+    return text
 
 
 def get_text_chunks(text):
@@ -71,20 +70,17 @@ def get_conversational_chain():
 
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
     docs = new_db.similarity_search(user_question)
 
     chain = get_conversational_chain()
 
-    
-    response = chain(
-        {"input_documents":docs, "question": user_question}
-        , return_only_outputs=True)
+    # Simplest way to get result
+    response = chain.run(input_documents=docs, question=user_question)
 
-    print(response)
     st.write(user_template.replace("{{MSG}}", user_question), unsafe_allow_html=True)
-    st.write(bot_template.replace("{{MSG}}", response["output_text"]), unsafe_allow_html=True)
+    st.write(bot_template.replace("{{MSG}}", response), unsafe_allow_html=True)
+
 
 def main():
     st.set_page_config("Chat with PDFs", page_icon=":open_file_folder:") 
